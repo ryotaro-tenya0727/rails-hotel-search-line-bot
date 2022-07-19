@@ -2,6 +2,8 @@ class LineBotController < ApplicationController
   protect_from_forgery except: [:callback]
 
   def callback
+    body = request.body.read
+    p body
   end
 
   private
