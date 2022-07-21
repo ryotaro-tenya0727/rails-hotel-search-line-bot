@@ -21,17 +21,9 @@ class LineBotController < ApplicationController
           }
           client.reply_message(event['replyToken'], message)
         when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
-          message_id = event['message']['id']
-          response = client.get_message_content(message_id)
-          case response
-          when Net::HTTPSuccess then
-            message = {
-              type: 'image',
-              originalContentUrl: 'https://placebear.com/350/250',
-              previewImageUrl: 'https://placebear.com/350/250',
-            }
-            client.reply_message(event['replyToken'], message)
-          end
+          response = client.get_message_content(event.message['id'])
+          tf = File.open("/tmp/#{SecureRandom.uuid}.jpg", "w+b")
+          tf.write(response.body)
         end
       end
     end
