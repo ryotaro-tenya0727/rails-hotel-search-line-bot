@@ -14,7 +14,6 @@ class LineBotController < ApplicationController
       when Line::Bot::Event::Message
         case event.type
         when Line::Bot::Event::MessageType::Text
-          # p event
           message = {
             type: 'text',
             text: "ありがとう"
@@ -24,6 +23,7 @@ class LineBotController < ApplicationController
           response = client.get_message_content(event.message['id'])
           tf = File.open("/tmp/#{SecureRandom.uuid}.jpg", "w+b")
           tf.write(response.body)
+          puts tf.size
         end
       end
     end
@@ -37,13 +37,5 @@ class LineBotController < ApplicationController
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
-  end
-
-  def reply_text(event, texts)
-    texts = [texts] if texts.is_a?(String)
-    client.reply_message(
-      event['replyToken'],
-      texts.map { |text| {type: 'text', text: text} }
-    )
   end
 end
