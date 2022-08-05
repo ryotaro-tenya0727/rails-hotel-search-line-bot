@@ -16,14 +16,13 @@ class LineBotController < ApplicationController
         when Line::Bot::Event::MessageType::Text
           message = {
             type: 'text',
-            text: "ありがとう"
+            text: event.message['text']
           }
           client.reply_message(event['replyToken'], message)
         when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
           response = client.get_message_content(event.message['id'])
-          tf = File.open("/tmp/#{SecureRandom.uuid}.jpg", "w+b")
+          tf = File.open("/tmp/#{SecureRandom.uuid}.jpg", 'w+b')
           tf.write(response.body)
-          puts tf.size
         end
       end
     end
@@ -33,9 +32,16 @@ class LineBotController < ApplicationController
   private
 
   def client
-    @client ||= Line::Bot::Client.new { |config|
-      config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
-    }
+    @client ||= Line::Bot::Client.new do |config|
+      config.channel_secret = ENV['LINE_CHANNEL_SECRET']
+      config.channel_token = ENV['LINE_CHANNEL_TOKEN']
+    end
+  end
+
+  def search_and_create_message(keyword)
+    conn = Faraday.new(
+      url: 'https://app.rakuten.co.jp/services/api/Travel/KeywordHotelSearch/20170426',
+      params: { 'applicationId': ENV['RAKUTEN_APPID'], 'hits': 5, 'keyword': keyword, 'formatVersion': 2 }
+    )
   end
 end
