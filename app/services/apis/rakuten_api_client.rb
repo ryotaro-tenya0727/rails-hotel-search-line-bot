@@ -1,5 +1,5 @@
 class Apis::RakutenApiClient
-  BASE_URL = 'https://app.rakuten.co.jp/services/api/Travel/KeywordHotelSearch/20170426'
+  BASE_URL = 'https://app.rakuten.co.jp/services/api/Travel/KeywordHotelSearch/20170426'.freeze
 
   def search_and_create_message(keyword)
     conn = Faraday.new(
@@ -11,7 +11,7 @@ class Apis::RakutenApiClient
     response['hotels'].each do |hotel|
       text << hotel[0]['hotelBasicInfo']['hotelName'] + "\n" + hotel[0]['hotelBasicInfo']['hotelInformationUrl'] + "\n" + "\n"
     end
-    message = {
+    {
       type: 'text',
       text: text
     }

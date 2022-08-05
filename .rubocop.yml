@@ -94,3 +94,6 @@ Metrics/BlockLength:
 
 Style/BlockDelimiters:
   Enabled: false
+
+Style/StringConcatenation:
+  Enabled: false
