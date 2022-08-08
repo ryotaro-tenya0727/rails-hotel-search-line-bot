@@ -1,9 +1,6 @@
 class Apis::LineBotClient
   class << self
-    def create_message(body, client, signature)
-      unless client.validate_signature(body, signature)
-        error 400 do 'Bad Request' end
-      end
+    def create_message(body, client)
       events = client.parse_events_from(body)
       events.each do |event|
         case event
